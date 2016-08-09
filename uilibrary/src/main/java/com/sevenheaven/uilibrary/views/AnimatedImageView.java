@@ -11,6 +11,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
 /**
+ * A ImageView that will change scaleType animated
+ *
  * Created by 7heaven on 16/7/30.
  */
 public class AnimatedImageView extends ImageView {

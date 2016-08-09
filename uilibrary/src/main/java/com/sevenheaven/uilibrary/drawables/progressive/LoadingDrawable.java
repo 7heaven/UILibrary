@@ -73,6 +73,7 @@ public abstract class LoadingDrawable extends ProgressiveDrawable {
         performEndAnimation();
     }
 
+    // TODO implement progressive animation to make a circling animation for progress content drawing
     private void performProgressiveAnimation(){
 
     }
