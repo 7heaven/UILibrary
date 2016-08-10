@@ -4,9 +4,11 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 
 /**
+ * Utility for geometry calculation
+ *
  * Created by 7heaven on 16/8/5.
  */
-public class GeomUtils {
+public class GeomUtil {
 
     /**
      * get the position on line(x0,y0-x1,y1) based on ratio
@@ -17,15 +19,15 @@ public class GeomUtils {
      * @param ratio
      * @return position on line based on ratio float[]{x, y}
      */
-    public static float[] segLine(float x0, float y0, float x1, float y1, float ratio){
+    public static float[] pointOnLine(float x0, float y0, float x1, float y1, float ratio){
         float[] result = new float[2];
 
-        segLine(x0, y0, x1, y1, ratio, result);
+        pointOnLine(x0, y0, x1, y1, ratio, result);
 
         return result;
     }
 
-    public static void segLine(float x0, float y0, float x1, float y1, float ratio, float[] position){
+    public static void pointOnLine(float x0, float y0, float x1, float y1, float ratio, float[] position){
         if(position != null && position.length == 2){
             float dx = x1 - x0;
             float dy = y1 - y0;
@@ -78,8 +80,8 @@ public class GeomUtils {
             float scaleX = (float) targetRect.width() / (float) originalRect.width();
             float scaleY = (float) targetRect.height() / (float) originalRect.height();
 
-            outMatrix.setTranslate(transformX, transformY);
-            outMatrix.postScale(scaleX, scaleY, transformX, transformY);
+            outMatrix.setScale(scaleX, scaleY, originalRect.left, originalRect.top);
+            outMatrix.postTranslate(transformX, transformY);
         }
     }
 }

@@ -9,7 +9,7 @@ import android.graphics.drawable.shapes.Shape;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntRange;
 
-import com.sevenheaven.uilibrary.utils.GeomUtils;
+import com.sevenheaven.uilibrary.utils.GeomUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,19 +105,19 @@ public class PolygonShape extends Shape {
 
         //区分corner，corner为0时区分出来以避免不必要的曲线计算
         if(mCornerRadius == 0){
-            positions = GeomUtils.pointOnCircumference(centerX, centerY, angle, radius);
+            positions = GeomUtil.pointOnCircumference(centerX, centerY, angle, radius);
             starPath.moveTo(positions[0], positions[1]);
             if(mAsStar){
-                positions = GeomUtils.pointOnCircumference(centerX, centerY, angle + halfStep, radius * mStarRatio);
+                positions = GeomUtil.pointOnCircumference(centerX, centerY, angle + halfStep, radius * mStarRatio);
                 starPath.lineTo(positions[0], positions[1]);
             }
             for(int i = 0; i < mVertexCount - 1; i++){
                 angle += angleStep;
-                positions = GeomUtils.pointOnCircumference(centerX, centerY, angle, radius);
+                positions = GeomUtil.pointOnCircumference(centerX, centerY, angle, radius);
                 starPath.lineTo(positions[0], positions[1]);
 
                 if(mAsStar){
-                    positions = GeomUtils.pointOnCircumference(centerX, centerY, angle + halfStep, radius * mStarRatio);
+                    positions = GeomUtil.pointOnCircumference(centerX, centerY, angle + halfStep, radius * mStarRatio);
                     starPath.lineTo(positions[0], positions[1]);
                 }
             }
@@ -132,14 +132,14 @@ public class PolygonShape extends Shape {
             //
 
 
-            float[] startP = GeomUtils.pointOnCircumference(centerX, centerY, angle - (mAsStar ? halfStep : angleStep), mAsStar ? radius * mStarRatio : radius);
-            float[] centerP = GeomUtils.pointOnCircumference(centerX, centerY, angle, radius);
-            float[] endP = GeomUtils.pointOnCircumference(centerX, centerY, angle + (mAsStar ? halfStep : angleStep), mAsStar ? radius * mStarRatio : radius);
+            float[] startP = GeomUtil.pointOnCircumference(centerX, centerY, angle - (mAsStar ? halfStep : angleStep), mAsStar ? radius * mStarRatio : radius);
+            float[] centerP = GeomUtil.pointOnCircumference(centerX, centerY, angle, radius);
+            float[] endP = GeomUtil.pointOnCircumference(centerX, centerY, angle + (mAsStar ? halfStep : angleStep), mAsStar ? radius * mStarRatio : radius);
 
-            float[] bezierStart = GeomUtils.segLine(centerP[0], centerP[1], startP[0], startP[1], this.mCornerRadius);
-            float[] bezierEnd = GeomUtils.segLine(centerP[0], centerP[1], endP[0], endP[1], this.mCornerRadius);
+            float[] bezierStart = GeomUtil.pointOnLine(centerP[0], centerP[1], startP[0], startP[1], this.mCornerRadius);
+            float[] bezierEnd = GeomUtil.pointOnLine(centerP[0], centerP[1], endP[0], endP[1], this.mCornerRadius);
 
-            float[] nextStart = GeomUtils.segLine(endP[0], endP[1], centerP[0], centerP[1], this.mCornerRadius);
+            float[] nextStart = GeomUtil.pointOnLine(endP[0], endP[1], centerP[0], centerP[1], this.mCornerRadius);
 
             starPath.moveTo(bezierStart[0], bezierStart[1]);
             starPath.quadTo(centerP[0], centerP[1], bezierEnd[0], bezierEnd[1]);
@@ -154,13 +154,13 @@ public class PolygonShape extends Shape {
             if(mAsStar){
                 cpIndex += 3;
                 centerP = endP.clone();
-                endP = GeomUtils.pointOnCircumference(centerX, centerY, angle + angleStep, radius);
+                endP = GeomUtil.pointOnCircumference(centerX, centerY, angle + angleStep, radius);
 
-                bezierEnd = GeomUtils.segLine(centerP[0], centerP[1], endP[0], endP[1], this.mCornerRadius);
+                bezierEnd = GeomUtil.pointOnLine(centerP[0], centerP[1], endP[0], endP[1], this.mCornerRadius);
 
                 mControlPoints.add(new PointF(nextStart[0], nextStart[1]));
 
-                nextStart = GeomUtils.segLine(endP[0], endP[1], centerP[0], centerP[1], this.mCornerRadius);
+                nextStart = GeomUtil.pointOnLine(endP[0], endP[1], centerP[0], centerP[1], this.mCornerRadius);
 
                 starPath.quadTo(centerP[0], centerP[1], bezierEnd[0], bezierEnd[1]);
                 starPath.lineTo(nextStart[0], nextStart[1]);
@@ -174,13 +174,13 @@ public class PolygonShape extends Shape {
 
                 angle += angleStep;
                 centerP = endP.clone();
-                endP = GeomUtils.pointOnCircumference(centerX, centerY, angle + (mAsStar ? halfStep : angleStep), mAsStar ? radius * mStarRatio : radius);
+                endP = GeomUtil.pointOnCircumference(centerX, centerY, angle + (mAsStar ? halfStep : angleStep), mAsStar ? radius * mStarRatio : radius);
 
-                bezierEnd = GeomUtils.segLine(centerP[0], centerP[1], endP[0], endP[1], this.mCornerRadius);
+                bezierEnd = GeomUtil.pointOnLine(centerP[0], centerP[1], endP[0], endP[1], this.mCornerRadius);
 
                 mControlPoints.add(new PointF(nextStart[0], nextStart[1]));
 
-                nextStart = GeomUtils.segLine(endP[0], endP[1], centerP[0], centerP[1], this.mCornerRadius);
+                nextStart = GeomUtil.pointOnLine(endP[0], endP[1], centerP[0], centerP[1], this.mCornerRadius);
 
                 starPath.quadTo(centerP[0], centerP[1], bezierEnd[0], bezierEnd[1]);
                 starPath.lineTo(nextStart[0], nextStart[1]);
@@ -192,13 +192,13 @@ public class PolygonShape extends Shape {
                 if(mAsStar){
                     cpIndex += 3;
                     centerP = endP;
-                    endP = GeomUtils.pointOnCircumference(centerX, centerY, angle + angleStep, radius);
+                    endP = GeomUtil.pointOnCircumference(centerX, centerY, angle + angleStep, radius);
 
-                    bezierEnd = GeomUtils.segLine(centerP[0], centerP[1], endP[0], endP[1], this.mCornerRadius);
+                    bezierEnd = GeomUtil.pointOnLine(centerP[0], centerP[1], endP[0], endP[1], this.mCornerRadius);
 
                     mControlPoints.add(new PointF(nextStart[0], nextStart[1]));
 
-                    nextStart = GeomUtils.segLine(endP[0], endP[1], centerP[0], centerP[1], this.mCornerRadius);
+                    nextStart = GeomUtil.pointOnLine(endP[0], endP[1], centerP[0], centerP[1], this.mCornerRadius);
 
                     starPath.quadTo(centerP[0], centerP[1], bezierEnd[0], bezierEnd[1]);
                     starPath.lineTo(nextStart[0], nextStart[1]);

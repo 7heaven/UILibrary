@@ -9,7 +9,7 @@ import android.graphics.RectF;
 import android.view.Gravity;
 
 import com.sevenheaven.uilibrary.drawables.progressive.ProgressiveDrawable;
-import com.sevenheaven.uilibrary.utils.GeomUtils;
+import com.sevenheaven.uilibrary.utils.GeomUtil;
 import com.sevenheaven.uilibrary.utils.PathMeasurement;
 
 /**
@@ -89,7 +89,6 @@ public class PathProgressProvider extends ProgressiveDrawable.DrawContentProvide
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     }
 
-    //TODO check if correct
     private void transformPath(PathDesc pathDesc, Rect targetBounds){
         pathDesc.computeBounds();
 
@@ -126,7 +125,7 @@ public class PathProgressProvider extends ProgressiveDrawable.DrawContentProvide
         Gravity.apply(pathDesc.mGravity, w, h, targetBounds, pathDescOutRect);
 
         Matrix transformMatrix = new Matrix();
-        GeomUtils.getTransformationMatrix(pathDesc.mBoundsInt, pathDescOutRect, transformMatrix);
+        GeomUtil.getTransformationMatrix(pathDesc.mBoundsInt, pathDescOutRect, transformMatrix);
         pathDesc.mPath.transform(transformMatrix);
 
         pathDesc.computeBounds();

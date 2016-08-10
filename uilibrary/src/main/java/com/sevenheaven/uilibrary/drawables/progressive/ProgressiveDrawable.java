@@ -130,6 +130,17 @@ public class ProgressiveDrawable extends Drawable{
         });
     }
 
+    public void setDrawContentProvider(DrawContentProvider provider){
+        mDrawContentProvider = provider;
+
+        if(mDrawContentProvider != null) mDrawContentProvider.onBoundsChange(getBounds());
+        invalidateSelf();
+    }
+
+    public DrawContentProvider getDrawContentProvider(){
+        return mDrawContentProvider;
+    }
+
     /**
      * set the interpolator for progress bar init animation
      * @param interpolator
