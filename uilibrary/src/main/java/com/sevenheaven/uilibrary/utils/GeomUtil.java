@@ -11,7 +11,8 @@ import android.graphics.Rect;
 public class GeomUtil {
 
     /**
-     * get the position on line(x0,y0-x1,y1) based on ratio
+     * Get the position on line(x0,y0-x1,y1) based on ratio
+     *
      * @param x0
      * @param y0
      * @param x1
@@ -41,7 +42,8 @@ public class GeomUtil {
     }
 
     /**
-     * calculate point on circumference for circle(centerX, centerY, radius) with angle in radians
+     * Calculate point on circumference for circle(centerX, centerY, radius) with angle in radians
+     *
      * @param centerX x of the center of the circle
      * @param centerY y of the center of the circle
      * @param angle angle in radians
@@ -67,7 +69,8 @@ public class GeomUtil {
     }
 
     /**
-     * get the transformation matrix from the original rectangle to the target rectangle
+     * Get the transformation matrix from the original rectangle to the target rectangle
+     *
      * @param originalRect
      * @param targetRect
      * @param outMatrix

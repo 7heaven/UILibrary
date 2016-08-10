@@ -39,13 +39,13 @@ public class MainActivity extends AppCompatActivity {
 
         String text = "Android N";
         paint.getTextPath(text, 0, text.length(), 0, paint.getTextSize(), path);
-        PathProgressProvider.PathDesc pathDesc = new PathProgressProvider.PathDesc(path, Gravity.CENTER, true, false, true);
+        PathProgressProvider.PathDesc pathDesc = new PathProgressProvider.PathDesc(path, Gravity.CENTER, true, true, true);
 
         pathProgressProvider = new PathProgressProvider(pathDesc, null){
             @Override
             protected void updateProgressPaint(Paint paint){
                 paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth(3);
+                paint.setStrokeWidth(10);
                 paint.setStrokeCap(Paint.Cap.ROUND);
                 paint.setColor(0xFF44AEFF);
             }

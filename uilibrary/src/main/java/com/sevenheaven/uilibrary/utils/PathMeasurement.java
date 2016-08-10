@@ -137,7 +137,6 @@ public class PathMeasurement {
 
             int i = 0;
             do{
-
                 if(async){
                     if(i == contourNum){
                         mPathMeasure.getPosTan(mSubPathLengths[i] * percentage, pos, tan);

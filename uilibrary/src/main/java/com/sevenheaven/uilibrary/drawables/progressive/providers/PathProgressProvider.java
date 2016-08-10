@@ -13,6 +13,8 @@ import com.sevenheaven.uilibrary.utils.GeomUtil;
 import com.sevenheaven.uilibrary.utils.PathMeasurement;
 
 /**
+ * Draw content progressively with the provided path
+ *
  * Created by 7heaven on 16/8/8.
  */
 public class PathProgressProvider extends ProgressiveDrawable.DrawContentProvider {
@@ -26,7 +28,7 @@ public class PathProgressProvider extends ProgressiveDrawable.DrawContentProvide
     private Paint mPaint;
 
     /**
-     * path description
+     * Path description
      */
     public static class PathDesc{
         Path mPath;
@@ -36,7 +38,7 @@ public class PathProgressProvider extends ProgressiveDrawable.DrawContentProvide
         RectF mBounds;
         Rect mBoundsInt;
 
-        boolean mSubPathsProgressiveAsync;
+        final boolean mSubPathsProgressiveAsync;
         final boolean mKeepAspect;
         final boolean mScaleForBounds;
 
@@ -46,6 +48,15 @@ public class PathProgressProvider extends ProgressiveDrawable.DrawContentProvide
             this(path, gravity, subPathsProgressiveAsync, true, true);
         }
 
+        /**
+         * Constructor for create a new PathDesc
+         *
+         * @param path main path
+         * @param gravity gravity for path in the ProgressiveDrawble
+         * @param subPathsProgressiveAsync indicate if path should draw progressively based on each contour's length or the entire length
+         * @param keepAspect indicate if path should keep aspect when scaleForBounds == true
+         * @param scaleForBounds indicate if path should scale when drawable bounds change
+         */
         public PathDesc(Path path, int gravity, boolean subPathsProgressiveAsync, boolean keepAspect, boolean scaleForBounds){
             mPath = path;
             mBounds = new RectF();
@@ -175,6 +186,7 @@ public class PathProgressProvider extends ProgressiveDrawable.DrawContentProvide
 
     @Override
     protected void drawProgress(Canvas canvas, float progress){
+        //draw the animation start/end path
         if(mDrawingAnimationPaths != null){
             updateAnimationPaint(mPaint);
             for(int i = 0; i < mDrawingAnimationPaths.length; i++){
@@ -183,6 +195,7 @@ public class PathProgressProvider extends ProgressiveDrawable.DrawContentProvide
             }
         }
 
+        //draw the progressive path
         if(mProgressPathMeasurement != null){
 
             mDrawingProgressPaths = mProgressPathMeasurement.updatePhare(progress, mProgressPathDesc.mSubPathsProgressiveAsync);

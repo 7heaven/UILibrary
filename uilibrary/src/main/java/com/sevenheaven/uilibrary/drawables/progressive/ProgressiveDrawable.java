@@ -17,6 +17,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
+ * Drawable for progress content drawing
+ *
  * Created by 7heaven on 16/8/5.
  */
 public class ProgressiveDrawable extends Drawable{
@@ -25,38 +27,41 @@ public class ProgressiveDrawable extends Drawable{
     private float mAnimatedValue = 0;
 
     ValueAnimator mAnimator;
+
     private long mShowDuration = -1;
-    private static final long DEFAULT_ANIMATION_DURATION = 400L;
     private long mDismissDuration = -1;
+    private static final long DEFAULT_ANIMATION_DURATION = 400L;
+
     private Interpolator mShowInterpolator;
-    private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new DecelerateInterpolator();
     private Interpolator mDismissInterpolator;
+    private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new DecelerateInterpolator();
+
     @AnimationType int mCurrentAnimationType;
 
     private DrawContentProvider mDrawContentProvider;
 
     /**
-     * class for provide progressive and animation content change
+     * Class for provide progressive and animation content change
      */
     public static abstract class DrawContentProvider{
 
         private ProgressiveDrawable mHost;
 
         /**
-         * call when the host's bound changed
+         * Call when the host's bound changed
          * @param bounds
          */
         protected abstract void onBoundsChange(Rect bounds);
 
         /**
-         * draw progressive content and animatable content if need.
+         * Draw progressive content and animatable content if need.
          * @param canvas the canvas which the content should be draw on.
          * @param progress current progress
          */
         protected abstract void drawProgress(Canvas canvas, @FloatRange(from=0.0F, to=1.0F) float progress);
 
         /**
-         * update the value for animation
+         * Update the value for animation
          *
          * @param type AnimationType
          * @param value animated value
@@ -133,8 +138,10 @@ public class ProgressiveDrawable extends Drawable{
     public void setDrawContentProvider(DrawContentProvider provider){
         mDrawContentProvider = provider;
 
-        if(mDrawContentProvider != null) mDrawContentProvider.onBoundsChange(getBounds());
-        invalidateSelf();
+        if(mDrawContentProvider != null){
+            mDrawContentProvider.onBoundsChange(getBounds());
+            invalidateSelf();
+        }
     }
 
     public DrawContentProvider getDrawContentProvider(){
@@ -142,7 +149,7 @@ public class ProgressiveDrawable extends Drawable{
     }
 
     /**
-     * set the interpolator for progress bar init animation
+     * Set the interpolator for progress bar init animation
      * @param interpolator
      */
     public void setShowAnimationInterpolator(Interpolator interpolator){
@@ -150,7 +157,7 @@ public class ProgressiveDrawable extends Drawable{
     }
 
     /**
-     * set the interpolator for progress bar dismiss animation
+     * Set the interpolator for progress bar dismiss animation
      * @param interpolator
      */
     public void setDismissAnimationInterpolator(Interpolator interpolator){
@@ -158,7 +165,7 @@ public class ProgressiveDrawable extends Drawable{
     }
 
     /**
-     * set the duration for progress bar init animation
+     * Set the duration for progress bar init animation
      * @param duration
      */
     public void setShowAnimationDuration(long duration){
@@ -166,7 +173,7 @@ public class ProgressiveDrawable extends Drawable{
     }
 
     /**
-     * set the duration for progress bar dismiss duration
+     * Set the duration for progress bar dismiss duration
      * @param duration
      */
     public void setDismissAnimationDuration(long duration){
@@ -174,7 +181,7 @@ public class ProgressiveDrawable extends Drawable{
     }
 
     /**
-     * set the progress
+     * Set the progress
      * @param progress
      */
     public void setProgress(float progress){
