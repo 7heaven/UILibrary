@@ -23,6 +23,8 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class ProgressiveDrawable extends Drawable{
 
+    public static float PROGRESS_IDLE = -1;
+
     private float mProgress = 0;
     private float mAnimatedValue = 0;
 
@@ -187,7 +189,7 @@ public class ProgressiveDrawable extends Drawable{
     public void setProgress(float progress){
         if(progress == 0){
             performStartAnimation();
-        }else if(progress == -1){
+        }else if(progress == PROGRESS_IDLE){
             performEndAnimation();
         }else if(mAnimatedValue != 1 && !mAnimator.isRunning()){
             mAnimatedValue = 1;
@@ -207,7 +209,10 @@ public class ProgressiveDrawable extends Drawable{
 
         if(mShowInterpolator != null) mAnimator.setInterpolator(mShowInterpolator);
         if(mShowDuration != -1) mAnimator.setDuration(mShowDuration);
+
+        if(mCurrentAnimationType == AnimationType.DISMISS_ANIMATION) mAnimator.setFloatValues(1 - mAnimatedValue, 1);
         mCurrentAnimationType = AnimationType.SHOW_ANIMATION;
+
         mAnimator.start();
     }
 
@@ -218,7 +223,12 @@ public class ProgressiveDrawable extends Drawable{
         }
         if(mDismissInterpolator != null) mAnimator.setInterpolator(mDismissInterpolator);
         if(mDismissDuration != -1) mAnimator.setDuration(mDismissDuration);
+
+        if(mCurrentAnimationType == AnimationType.SHOW_ANIMATION) mAnimator.setFloatValues(1 - mAnimatedValue, 1);
         mCurrentAnimationType = AnimationType.DISMISS_ANIMATION;
+
+        mAnimator.setFloatValues(1 - mAnimatedValue, 1);
+
         mAnimator.start();
     }
 

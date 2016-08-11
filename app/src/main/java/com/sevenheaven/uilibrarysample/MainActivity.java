@@ -1,9 +1,12 @@
 package com.sevenheaven.uilibrarysample;
 
+import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,29 +27,35 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         View view = new View(this);
 
-        Path path = new Path();
-//        path.moveTo(0, 200);
-//        path.addArc(0, 0, 200, 200, 180, -180);
-//        path.moveTo(100, 100);
-//        path.lineTo(100, 200);
-//        path.moveTo(100, 100);
-//        path.lineTo(100, 0);
-//        path.addArc(0, 0, 200, 200, 180, 180);
-
         Paint paint = new Paint();
         paint.setTextSize(100);
 
-
+        Path animatePath = new Path();
         String text = "Android N";
-        paint.getTextPath(text, 0, text.length(), 0, paint.getTextSize(), path);
-        PathProgressProvider.PathDesc pathDesc = new PathProgressProvider.PathDesc(path, Gravity.CENTER, true, true, true);
+        paint.getTextPath(text, 0, text.length(), 0, paint.getTextSize(), animatePath);
+        PathProgressProvider.PathDesc animateDesc = new PathProgressProvider.PathDesc(animatePath, Gravity.CENTER, true, false, false);
 
-        pathProgressProvider = new PathProgressProvider(pathDesc, null){
+        RectF animatePathBounds = new RectF();
+        animatePath.computeBounds(animatePathBounds, false);
+
+        Path progressPath = new Path();
+        progressPath.addCircle(100, 100, animatePathBounds.width() / 2 + 50, Path.Direction.CW);
+        progressPath.addCircle(100, 100, animatePathBounds.width() / 2 + 80, Path.Direction.CW);
+        PathProgressProvider.PathDesc pathDesc = new PathProgressProvider.PathDesc(progressPath, Gravity.CENTER, true, true, false);
+
+        pathProgressProvider = new PathProgressProvider(pathDesc, animateDesc){
             @Override
             protected void updateProgressPaint(Paint paint){
                 paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth(10);
+                paint.setStrokeWidth(5);
                 paint.setStrokeCap(Paint.Cap.ROUND);
+                paint.setColor(0xFF44AEFF);
+            }
+
+            @Override
+            protected void updateAnimationPaint(Paint paint){
+                paint.setStyle(Paint.Style.FILL_AND_STROKE);
+                paint.setStrokeWidth(2);
                 paint.setColor(0xFF44AEFF);
             }
         };
@@ -72,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 progressiveDrawable.setProgress(progress);
                 break;
             case MotionEvent.ACTION_UP:
-                progressiveDrawable.setProgress(-1);
+                progressiveDrawable.setProgress(ProgressiveDrawable.PROGRESS_IDLE);
                 break;
         }
 

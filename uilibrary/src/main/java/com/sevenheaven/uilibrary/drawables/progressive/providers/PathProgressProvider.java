@@ -21,6 +21,8 @@ public class PathProgressProvider extends ProgressiveDrawable.DrawContentProvide
 
     private Path[] mDrawingProgressPaths;
     private Path[] mDrawingAnimationPaths;
+    private Path mDrawingProgressConcatPath;
+    private Path mDrawingAnimationConcatPath;
 
     private PathMeasurement mProgressPathMeasurement;
     private PathMeasurement mAnimationPathMeasurement;
@@ -96,6 +98,9 @@ public class PathProgressProvider extends ProgressiveDrawable.DrawContentProvide
             mAnimationPathMeasurement = new PathMeasurement(mAnimationPathDesc.mPath);
             mAnimationPathDesc.mAssociatePathMeasurement = mAnimationPathMeasurement;
         }
+
+        mDrawingProgressConcatPath = new Path();
+        mDrawingAnimationConcatPath = new Path();
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     }
@@ -189,10 +194,14 @@ public class PathProgressProvider extends ProgressiveDrawable.DrawContentProvide
         //draw the animation start/end path
         if(mDrawingAnimationPaths != null){
             updateAnimationPaint(mPaint);
+            mDrawingAnimationConcatPath.reset();
+
             for(int i = 0; i < mDrawingAnimationPaths.length; i++){
                 Path path = mDrawingAnimationPaths[i];
-                if(path != null) canvas.drawPath(path, mPaint);
+                if(path != null) mDrawingAnimationConcatPath.addPath(mDrawingAnimationPaths[i]);
             }
+
+            canvas.drawPath(mDrawingAnimationConcatPath, mPaint);
         }
 
         //draw the progressive path
@@ -202,10 +211,14 @@ public class PathProgressProvider extends ProgressiveDrawable.DrawContentProvide
 
             if(mDrawingProgressPaths != null){
                 updateProgressPaint(mPaint);
+                mDrawingProgressConcatPath.reset();
+
                 for(int i = 0; i < mDrawingProgressPaths.length; i++){
                     Path path = mDrawingProgressPaths[i];
-                    if(path != null) canvas.drawPath(path, mPaint);
+                    if(path != null) mDrawingProgressConcatPath.addPath(path);
                 }
+
+                canvas.drawPath(mDrawingProgressConcatPath, mPaint);
             }
         }
     }
