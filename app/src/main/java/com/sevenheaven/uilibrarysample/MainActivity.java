@@ -1,16 +1,16 @@
 package com.sevenheaven.uilibrarysample;
 
-import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.sevenheaven.uilibrary.drawables.GroupedAvatarDrawable;
 import com.sevenheaven.uilibrary.drawables.progressive.ProgressiveDrawable;
 import com.sevenheaven.uilibrary.drawables.progressive.providers.AppStoreStyleProgressProvider;
 import com.sevenheaven.uilibrary.drawables.progressive.providers.PathProgressProvider;
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             protected void updateAnimationPaint(Paint paint){
-                paint.setStyle(Paint.Style.FILL_AND_STROKE);
+                paint.setStyle(Paint.Style.STROKE);
                 paint.setStrokeWidth(2);
                 paint.setColor(0xFF44AEFF);
             }
@@ -63,7 +63,16 @@ public class MainActivity extends AppCompatActivity {
         appStoreProvider = new AppStoreStyleProgressProvider(0x9944AEFF);
 
         progressiveDrawable = new ProgressiveDrawable(pathProgressProvider);
-        view.setBackground(progressiveDrawable);
+
+        GroupedAvatarDrawable avatarDrawable = new GroupedAvatarDrawable();
+        avatarDrawable.setAvatars(BitmapFactory.decodeResource(getResources(), R.drawable.test0),
+                BitmapFactory.decodeResource(getResources(), R.drawable.test1),
+                BitmapFactory.decodeResource(getResources(), R.drawable.test2),
+                BitmapFactory.decodeResource(getResources(), R.drawable.test0),
+                BitmapFactory.decodeResource(getResources(), R.drawable.test1),
+                BitmapFactory.decodeResource(getResources(), R.drawable.test2));
+
+        view.setBackground(avatarDrawable);
 
         setContentView(view);
     }
