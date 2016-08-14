@@ -69,9 +69,9 @@ public class GroupedAvatarDrawable extends Drawable {
             mCenterX = getBounds().width() / 2;
             mCenterY = getBounds().height() / 2;
             generateSourceBitmap(getBounds());
-        }
 
-        invalidateSelf();
+            invalidateSelf();
+        }
     }
 
     /**
@@ -83,6 +83,8 @@ public class GroupedAvatarDrawable extends Drawable {
             mRadiusStrokeWidth = strokeWidth;
 
             generateSourceBitmap(getBounds());
+
+            invalidateSelf();
         }
     }
 
