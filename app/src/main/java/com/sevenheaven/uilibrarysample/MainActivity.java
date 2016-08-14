@@ -1,9 +1,12 @@
 package com.sevenheaven.uilibrarysample;
 
+import android.gesture.Gesture;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -14,6 +17,7 @@ import com.sevenheaven.uilibrary.drawables.GroupedAvatarDrawable;
 import com.sevenheaven.uilibrary.drawables.progressive.ProgressiveDrawable;
 import com.sevenheaven.uilibrary.drawables.progressive.providers.AppStoreStyleProgressProvider;
 import com.sevenheaven.uilibrary.drawables.progressive.providers.PathProgressProvider;
+import com.sevenheaven.uilibrary.views.GestureImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,9 +26,24 @@ public class MainActivity extends AppCompatActivity {
     ProgressiveDrawable.DrawContentProvider pathProgressProvider;
     ProgressiveDrawable.DrawContentProvider appStoreProvider;
 
+    Bitmap[] avatars;
+
+    GroupedAvatarDrawable avatarDrawable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        avatars = new Bitmap[]{BitmapFactory.decodeResource(getResources(), R.drawable.test0),
+                BitmapFactory.decodeResource(getResources(), R.drawable.test1),
+                BitmapFactory.decodeResource(getResources(), R.drawable.test2),
+                BitmapFactory.decodeResource(getResources(), R.drawable.test0),
+                BitmapFactory.decodeResource(getResources(), R.drawable.test1),
+                BitmapFactory.decodeResource(getResources(), R.drawable.test2),
+                BitmapFactory.decodeResource(getResources(), R.drawable.test0),
+                BitmapFactory.decodeResource(getResources(), R.drawable.test1),
+                BitmapFactory.decodeResource(getResources(), R.drawable.test2)};
+
         View view = new View(this);
 
         Paint paint = new Paint();
@@ -64,15 +83,18 @@ public class MainActivity extends AppCompatActivity {
 
         progressiveDrawable = new ProgressiveDrawable(pathProgressProvider);
 
-        GroupedAvatarDrawable avatarDrawable = new GroupedAvatarDrawable();
+        avatarDrawable = new GroupedAvatarDrawable();
+        avatarDrawable.setStrokeWidth(20);
         avatarDrawable.setAvatars(BitmapFactory.decodeResource(getResources(), R.drawable.test0),
-                BitmapFactory.decodeResource(getResources(), R.drawable.test1),
-                BitmapFactory.decodeResource(getResources(), R.drawable.test2),
-                BitmapFactory.decodeResource(getResources(), R.drawable.test0),
                 BitmapFactory.decodeResource(getResources(), R.drawable.test1),
                 BitmapFactory.decodeResource(getResources(), R.drawable.test2));
 
         view.setBackground(avatarDrawable);
+
+        Drawable bitmapDrawable = getResources().getDrawable(R.drawable.test0, null);
+        bitmapDrawable.setBounds(0, 0, 500, 500);
+        GestureImageView imageView = new GestureImageView(this);
+        imageView.setImageDrawable(bitmapDrawable);
 
         setContentView(view);
     }
@@ -88,6 +110,15 @@ public class MainActivity extends AppCompatActivity {
                 float progress = event.getX() / (float) getResources().getDisplayMetrics().widthPixels;
 
                 progressiveDrawable.setProgress(progress);
+
+                int index = (int) (progress * avatars.length);
+                int count = index < avatars.length ? index : avatars.length;
+                Bitmap[] input = new Bitmap[count];
+                for(int i = 0; i < count; i++){
+                    input[i] = avatars[i];
+                }
+
+                avatarDrawable.setAvatars(input);
                 break;
             case MotionEvent.ACTION_UP:
                 progressiveDrawable.setProgress(ProgressiveDrawable.PROGRESS_IDLE);

@@ -32,6 +32,8 @@ public class GroupedAvatarDrawable extends Drawable {
 
     private int mRadiusStrokeWidth;
 
+    private static final float SINGLE_ITEM_OVERLAY_FACTOR = 0.08F;
+
     private int mCenterX;
     private int mCenterY;
 
@@ -56,12 +58,30 @@ public class GroupedAvatarDrawable extends Drawable {
         mPaint.setColorFilter(filter);
     }
 
+    /**
+     * set avatar bitmaps for drawing
+     * @param inputBitmaps
+     */
     public void setAvatars(Bitmap... inputBitmaps){
         mInputBitmaps = inputBitmaps;
 
         if(getBounds().width() > 0 && getBounds().height() > 0){
             mCenterX = getBounds().width() / 2;
             mCenterY = getBounds().height() / 2;
+            generateSourceBitmap(getBounds());
+        }
+
+        invalidateSelf();
+    }
+
+    /**
+     * set stroke width for for single image
+     * @param strokeWidth
+     */
+    public void setStrokeWidth(int strokeWidth){
+        if(mRadiusStrokeWidth != strokeWidth){
+            mRadiusStrokeWidth = strokeWidth;
+
             generateSourceBitmap(getBounds());
         }
     }
@@ -80,13 +100,24 @@ public class GroupedAvatarDrawable extends Drawable {
             Paint drawPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             drawPaint.setFilterBitmap(true);
 
-            float fitBoundsRadius = ((bounds.width() > bounds.height() ? bounds.height() : bounds.width()) / 2);
+            float fitBoundsRadius = (bounds.width() > bounds.height() ? bounds.height() : bounds.width()) / 2;
             if(bitmapCount > 1){
-                float singleRadius = (fitBoundsRadius * (1.1F - (bitmapCount - 2) * 0.1F)) / 2;
+                /**
+                 * To ensure when bitmapCount == 3, each item's radius will equals to fitBoundsRadius / 2
+                 * and radius of single item will decrease when bitmapCount increase
+                 */
+                float scaleFactor = bitmapCount < 7 ? (1.0F + SINGLE_ITEM_OVERLAY_FACTOR) - (bitmapCount - 2) * SINGLE_ITEM_OVERLAY_FACTOR : 1.0F * (5.0F / bitmapCount);
+                float singleRadius = (fitBoundsRadius * scaleFactor) / 2 - mRadiusStrokeWidth;
                 float outerCircleRadius = fitBoundsRadius - singleRadius - mRadiusStrokeWidth;
 
                 double step = Math.PI * 2.0 / bitmapCount;
-                double startAngle = (mInputBitmaps.length & 1) == 0 ? -Math.PI * 0.5 - (bitmapCount <= 4 ? Math.PI * 0.25 : step / 2) : -Math.PI * 0.5;
+
+                double startAngle;
+                if((bitmapCount & 1) == 0){
+                    startAngle = -Math.PI * 0.5 - (bitmapCount == 2 ? Math.PI * 0.25 : step / 2);
+                }else{
+                    startAngle = -Math.PI * 0.5F;
+                }
 
                 float[] centerPoint = new float[2];
                 for(int i = 0; i < bitmapCount; i++){
