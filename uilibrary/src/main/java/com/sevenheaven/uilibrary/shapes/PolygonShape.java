@@ -103,7 +103,7 @@ public class PolygonShape extends Shape {
         double halfStep = angleStep * 0.5F;
         float[] positions;
 
-        //区分corner，corner为0时区分出来以避免不必要的曲线计算
+        //check if corner radius is zero, to prevent unnecessary calculation
         if(mCornerRadius == 0){
             positions = GeomUtil.pointOnCircumference(centerX, centerY, angle, radius);
             starPath.moveTo(positions[0], positions[1]);
@@ -125,12 +125,15 @@ public class PolygonShape extends Shape {
             starPath.close();
         }else{
 
-            //
-            //
-            //    /\  <----    )  绘制圆角的多边形， 每个角包含一条曲线和一条直线，曲线用来实现圆角 直线用来连接下一个角，曲线的控制点为原角的顶点，
-            //    \/          /    起点和终点分别是以corner为百分比取到得两边线段上的点（绘制星型多边形时 对 凹角做类似处理）
-            //
-
+            /**
+             *
+             *  /\         \
+             *  \/  <----- ) When drawing a round corner Polygon, each corner contains a curve and a straight line,
+             *            /  Curve represent the round corner and connect to the next corner using the straight line,
+             *               the Curve is a Bezier curve, the control point of the bezier curve is the vertex of the
+             *               corner, and the start point and the end point are on the straight lines representing this
+             *               corner
+             */
 
             float[] startP = GeomUtil.pointOnCircumference(centerX, centerY, angle - (mAsStar ? halfStep : angleStep), mAsStar ? radius * mStarRatio : radius);
             float[] centerP = GeomUtil.pointOnCircumference(centerX, centerY, angle, radius);

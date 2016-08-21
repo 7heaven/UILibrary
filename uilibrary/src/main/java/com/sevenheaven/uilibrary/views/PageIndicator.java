@@ -11,6 +11,7 @@ import android.view.View;
 import com.sevenheaven.uilibrary.R;
 
 /**
+ * PageIndicator that can easily customize contents, with many pre-defined style such as circle, square, alphabet, etc.
  * Created by 7heaven on 16/5/25.
  */
 public class PageIndicator extends View {
@@ -42,15 +43,26 @@ public class PageIndicator extends View {
 
     private int mPageCount;
     private int mTotalContentWidth;
+
+    /**
+     * For recording content coordinate after measurement
+     */
     private int mContentX;
     private int mContentY;
 
+    /**
+     * Canvas's drawText do not accept single char,
+     * so we define a char array here for char content drawing
+     */
     private char[] mAlphabetStore = new char[1];
-    private char mCustomChar = '\0';
+    private char[] mCustomChar;
 
     private int mCurrentSelection = 0;
 
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    /**
+     * FontMetric for positioning Text when drawText method is call
+     */
     private Paint.FontMetrics mAlphabetFM = new Paint.FontMetrics();
 
     public PageIndicator(Context context){
@@ -72,11 +84,14 @@ public class PageIndicator extends View {
         setHighlightColor(ta.getColor(R.styleable.PageIndicator_highlightColor, 0xFFFFFFFF));
         setTotalPageCount(ta.getInt(R.styleable.PageIndicator_totalCount, 3));
 
+        String customChars = ta.getString(R.styleable.PageIndicator_customChar);
+        if(customChars != null) setCustomChar(customChars.toCharArray());
+
         ta.recycle();
 
     }
 
-    public void setCustomChar(char customChar){
+    public void setCustomChar(char... customChar){
         mCustomChar = customChar;
         if(mCurrentBlockType == BlockType.CUSTOM_CHAR){
             invalidate();
@@ -143,6 +158,9 @@ public class PageIndicator extends View {
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
         if(mPageCount > 0){
+            /**
+             * calculate minimum content width based on block size and block gap
+             */
             mTotalContentWidth = mPageCount * mBlockSize + (mPageCount - 1) * mBlockGap;
 
             final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -210,14 +228,21 @@ public class PageIndicator extends View {
                 canvas.drawLine(x, y + mHalfBlockSize, x + mBlockSize, y + mHalfBlockSize, mPaint);
                 break;
             case ALPHABET:
-                mAlphabetStore[0] = (char) (index + 'A');
+                mAlphabetStore[0] = (char) ((index % 26) + 'A');
                 canvas.drawText(mAlphabetStore, 0, 1, x, y + mBlockSize - mAlphabetFM.descent, mPaint);
                 break;
             case NUMMERIC:
-                mAlphabetStore[0] = (char) (index + '1');
+                mAlphabetStore[0] = (char) ((index % 9) + '1');
                 canvas.drawText(mAlphabetStore, 0, 1, x, y + mBlockSize - mAlphabetFM.descent, mPaint);
+                break;
+            case CUSTOM_CHAR:
+                if(mCustomChar != null){
+                    mAlphabetStore[0] = mCustomChar[(index % mCustomChar.length)];
+                    canvas.drawText(mAlphabetStore, 0, 1, x, y + mBlockSize - mAlphabetFM.descent, mPaint);
+                }
                 break;
 
         }
     }
 }
+
