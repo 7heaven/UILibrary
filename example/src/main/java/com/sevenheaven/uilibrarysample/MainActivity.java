@@ -1,6 +1,5 @@
 package com.sevenheaven.uilibrarysample;
 
-import android.gesture.Gesture;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
@@ -17,7 +16,6 @@ import com.sevenheaven.uilibrary.drawables.GroupedAvatarDrawable;
 import com.sevenheaven.uilibrary.drawables.progressive.ProgressiveDrawable;
 import com.sevenheaven.uilibrary.drawables.progressive.providers.AppStoreStyleProgressProvider;
 import com.sevenheaven.uilibrary.drawables.progressive.providers.PathProgressProvider;
-import com.sevenheaven.uilibrary.views.GestureImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -93,8 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
         Drawable bitmapDrawable = getResources().getDrawable(R.drawable.test0, null);
         bitmapDrawable.setBounds(0, 0, 500, 500);
-        GestureImageView imageView = new GestureImageView(this);
-        imageView.setImageDrawable(bitmapDrawable);
 
         setContentView(view);
     }
