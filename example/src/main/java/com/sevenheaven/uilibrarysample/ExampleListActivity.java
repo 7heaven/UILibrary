@@ -12,11 +12,14 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +30,7 @@ import com.sevenheaven.uilibrary.drawables.progressive.ProgressiveDrawable;
 import com.sevenheaven.uilibrary.drawables.progressive.providers.AppStoreStyleProgressProvider;
 import com.sevenheaven.uilibrary.drawables.progressive.providers.PathProgressProvider;
 import com.sevenheaven.uilibrary.shapes.PolygonShape;
+import com.sevenheaven.uilibrary.views.AnimatedImageView;
 import com.sevenheaven.uilibrarysample.ExampleListAdapter.ExampleItem;
 
 /**
@@ -61,6 +65,43 @@ public class ExampleListActivity extends Activity {
         addPathProgressDrawableToList();
         addMaskDrawableToList();
         addPolygonShapeInteractToList();
+        addAnimatedImageViewToList();
+    }
+
+    private void addAnimatedImageViewToList(){
+        final AnimatedImageView imageView = new AnimatedImageView(this);
+        ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.setMargins(50, 50, 50, 50);
+        imageView.setLayoutParams(layoutParams);
+        imageView.setImageResource(R.drawable.test2);
+
+        final ImageView.ScaleType[] allScaleTypes = new ImageView.ScaleType[]{
+                ImageView.ScaleType.CENTER,
+                ImageView.ScaleType.CENTER_CROP,
+                ImageView.ScaleType.CENTER_INSIDE,
+                ImageView.ScaleType.FIT_CENTER,
+                ImageView.ScaleType.FIT_END,
+                ImageView.ScaleType.FIT_START,
+                ImageView.ScaleType.FIT_XY
+        };
+
+        mExampleItemList.add(new ExampleItem("AnimatedImageView", new ExampleDetailActivity.DetailContentProvider() {
+            @Override
+            public Object provideInstance() {
+                return imageView;
+            }
+
+            @Override
+            public void onGestureMove(float x, float y, int action) {
+                if(x >= 0 && x <= 1){
+                    imageView.setScaleTypeAnimated(allScaleTypes[(int) (x * allScaleTypes.length)]);
+                }
+            }
+
+            @Override
+            public void destroy(){
+            }
+        }));
     }
 
     private void addPolygonShapeInteractToList(){
@@ -78,14 +119,6 @@ public class ExampleListActivity extends Activity {
                 paint.setColor(0xFF32ADFF);
 
                 shape.draw(canvas, paint);
-
-//                PointF[] controlPoint = shape.getControlPoints();
-//                paint.setColor(0xFFFFAD32);
-//                paint.setStyle(Paint.Style.FILL);
-//                for(int i = 0; i < controlPoint.length; i++){
-//                    PointF point = controlPoint[i];
-//                    canvas.drawCircle(point.x, point.y, 10, paint);
-//                }
 
                 canvas.restore();
             }
@@ -124,6 +157,11 @@ public class ExampleListActivity extends Activity {
                     contentDrawable.invalidateSelf();
                 }
             }
+
+            @Override
+            public void destroy(){
+
+            }
         }));
     }
 
@@ -143,6 +181,11 @@ public class ExampleListActivity extends Activity {
                     shape.setVertexCount((int) (x * 6) + 3);
                     drawable.recreateContent();
                 }
+            }
+
+            @Override
+            public void destroy(){
+
             }
         }));
     }
@@ -194,6 +237,11 @@ public class ExampleListActivity extends Activity {
                     drawable.setProgress(x);
                 }
             }
+
+            @Override
+            public void destroy(){
+
+            }
         }));
     }
 
@@ -201,10 +249,12 @@ public class ExampleListActivity extends Activity {
         ProgressiveDrawable.DrawContentProvider appStoreProvider = new AppStoreStyleProgressProvider(0x9944AEFF);
 
         final ProgressiveDrawable drawable = new ProgressiveDrawable(appStoreProvider);
+        final Drawable backgroundDrawable = ContextCompat.getDrawable(this, R.drawable.test0);
+        final LayerDrawable contentDrawalbe = new LayerDrawable(new Drawable[]{backgroundDrawable, drawable});
         mExampleItemList.add(new ExampleItem("AppStoreStyleDrawable", new ExampleDetailActivity.DetailContentProvider() {
             @Override
             public Object provideInstance() {
-                return drawable;
+                return contentDrawalbe;
             }
 
             @Override
@@ -212,6 +262,11 @@ public class ExampleListActivity extends Activity {
                 if(x >= -1 && x <= 1){
                     drawable.setProgress(x);
                 }
+            }
+
+            @Override
+            public void destroy(){
+
             }
         }));
     }
@@ -246,6 +301,11 @@ public class ExampleListActivity extends Activity {
 
                     avatarDrawable.setAvatars(input);
                 }
+            }
+
+            @Override
+            public void destroy(){
+
             }
         }));
     }

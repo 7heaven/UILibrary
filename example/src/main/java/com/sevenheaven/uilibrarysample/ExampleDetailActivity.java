@@ -18,6 +18,8 @@ public class ExampleDetailActivity extends Activity {
         T provideInstance();
 
         void onGestureMove(float x, float y, int action);
+
+        void destroy();
     }
 
     public static DetailContentProvider mContentProvider;
@@ -96,7 +98,13 @@ public class ExampleDetailActivity extends Activity {
     @Override
     protected  void onDestroy(){
         super.onDestroy();
-        mContentProvider = null;
+        if(mRootLayout.getChildCount() > 0){
+            mRootLayout.removeAllViews();
+        }
+        if(mContentProvider != null){
+            mContentProvider.destroy();
+            mContentProvider = null;
+        }
     }
 }
 
