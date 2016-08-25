@@ -1,5 +1,6 @@
 package com.sevenheaven.uilibrarysample;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,8 +32,19 @@ public class ExampleListAdapter extends RecyclerView.Adapter<ExampleListAdapter.
 
     @Override
     public void onBindViewHolder(ExampleListViewHolder viewHolder, int position){
-        ExampleItem item = mExampleItemList.get(position);
+        final ExampleItem item = mExampleItemList.get(position);
         viewHolder.title.setText(item.title);
+        if(item.provider != null){
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(view.getContext(), ExampleDetailActivity.class);
+                    ExampleDetailActivity.mContentProvider = item.provider;
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    view.getContext().startActivity(intent);
+                }
+            });
+        }
     }
 
     public static class ExampleListViewHolder extends RecyclerView.ViewHolder{
@@ -47,6 +59,11 @@ public class ExampleListAdapter extends RecyclerView.Adapter<ExampleListAdapter.
 
     public static class ExampleItem{
         String title;
+        ExampleDetailActivity.DetailContentProvider provider;
 
+        public ExampleItem(String title, ExampleDetailActivity.DetailContentProvider provider){
+            this.title = title;
+            this.provider = provider;
+        }
     }
 }

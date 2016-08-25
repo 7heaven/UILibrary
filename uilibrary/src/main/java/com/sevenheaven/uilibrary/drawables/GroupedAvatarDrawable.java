@@ -125,7 +125,7 @@ public class GroupedAvatarDrawable extends Drawable {
                 for(int i = 0; i < bitmapCount; i++){
                     GeomUtil.pointOnCircumference(mCenterX, mCenterY, startAngle + i * step, outerCircleRadius, centerPoint);
 
-                    drawBitmapWithStroke(canvas, mInputBitmaps[i], (int) centerPoint[0], (int) centerPoint[1], singleRadius, drawPaint);
+                    if(mInputBitmaps[i] != null && !mInputBitmaps[i].isRecycled()) drawBitmapWithStroke(canvas, mInputBitmaps[i], (int) centerPoint[0], (int) centerPoint[1], singleRadius, drawPaint);
                 }
 
                 if(bitmapCount > 2){
@@ -199,13 +199,12 @@ public class GroupedAvatarDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas){
-        if(mSourceBitmap != null){
+        if(mSourceBitmap != null && !mSourceBitmap.isRecycled()){
             canvas.drawBitmap(mSourceBitmap, 0, 0, mPaint);
         }
     }
 
-    @Override
-    protected void finalize(){
+    public void recycle(){
         if(mInputBitmaps != null){
             for(int i = 0; i < mInputBitmaps.length; i++){
                 Bitmap bitmap = mInputBitmaps[i];
@@ -213,8 +212,13 @@ public class GroupedAvatarDrawable extends Drawable {
                     bitmap.recycle();
                 }
             }
+
+            mInputBitmaps = null;
         }
 
-        if(mSourceBitmap != null && !mSourceBitmap.isRecycled()) mSourceBitmap.recycle();
+        if(mSourceBitmap != null && !mSourceBitmap.isRecycled()){
+            mSourceBitmap.recycle();
+            mSourceBitmap = null;
+        }
     }
 }

@@ -50,6 +50,12 @@ public class MaskDrawable extends Drawable {
         invalidateSelf();
     }
 
+    public void recreateContent(){
+        recreateBitmap();
+
+        invalidateSelf();
+    }
+
     @Override
     public void onBoundsChange(Rect bounds){
         if(mDrawingContent != null){
@@ -64,7 +70,7 @@ public class MaskDrawable extends Drawable {
 
     private void recreateBitmap(){
         if(mDrawingContent != null && mMask != null){
-            if(mBitmap != null){
+            if(mBitmap != null && !mBitmap.isRecycled()){
                 mBitmap.recycle();
                 mBitmap = null;
             }
@@ -102,5 +108,14 @@ public class MaskDrawable extends Drawable {
     @Override
     public int getOpacity() {
         return PixelFormat.TRANSLUCENT;
+    }
+
+    public void recycle(){
+        mPaint.setShader(null);
+
+        if(mBitmap != null && !mBitmap.isRecycled()){
+            mBitmap.recycle();
+            mBitmap = null;
+        }
     }
 }
