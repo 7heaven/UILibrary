@@ -8,7 +8,6 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -246,10 +245,10 @@ public class ExampleListActivity extends Activity {
     }
 
     private void addAppStoreStyleDrawableToList(){
-        ProgressiveDrawable.DrawContentProvider appStoreProvider = new AppStoreStyleProgressProvider(0x9944AEFF);
+        ProgressiveDrawable.DrawContentProvider appStoreProvider = new AppStoreStyleProgressProvider(0x99000000);
 
         final ProgressiveDrawable drawable = new ProgressiveDrawable(appStoreProvider);
-        final Drawable backgroundDrawable = ContextCompat.getDrawable(this, R.drawable.test0);
+        final Drawable backgroundDrawable = ContextCompat.getDrawable(this, R.drawable.test1);
         final LayerDrawable contentDrawalbe = new LayerDrawable(new Drawable[]{backgroundDrawable, drawable});
         mExampleItemList.add(new ExampleItem("AppStoreStyleDrawable", new ExampleDetailActivity.DetailContentProvider() {
             @Override
