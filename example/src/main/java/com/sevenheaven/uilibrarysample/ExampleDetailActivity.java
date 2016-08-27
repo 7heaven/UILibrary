@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.SeekBar;
 
 /**
  * Created by 7heaven on 16/8/25.
@@ -26,6 +27,9 @@ public class ExampleDetailActivity extends Activity {
 
     private FrameLayout mRootLayout;
 
+    private SeekBar xAxisSeekBar;
+    private SeekBar yAxisSeekBar;
+
     private int mScreenWidth;
     private int mScreenHeight;
     public static final int PROGRESS_INIT = -2;
@@ -42,6 +46,8 @@ public class ExampleDetailActivity extends Activity {
         mScreenHeight = getResources().getDisplayMetrics().heightPixels;
 
         mRootLayout = (FrameLayout) findViewById(R.id.root_layout);
+        xAxisSeekBar = (SeekBar) findViewById(R.id.x_axis_seekbar);
+        yAxisSeekBar = (SeekBar) findViewById(R.id.y_axis_seekbar);
 
         if(mContentProvider != null){
             Object providedInstance = mContentProvider.provideInstance();
@@ -70,30 +76,69 @@ public class ExampleDetailActivity extends Activity {
 
                 mRootLayout.addView(view);
             }
+
+            xAxisSeekBar.setMax(100);
+            yAxisSeekBar.setMax(100);
+
+            xAxisSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    mContentProvider.onGestureMove((float) progress / 100.0F, (float) yAxisSeekBar.getProgress() / 100.0F, MotionEvent.ACTION_MOVE);
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                    mContentProvider.onGestureMove(PROGRESS_INIT, PROGRESS_INIT, MotionEvent.ACTION_DOWN);
+                    mContentProvider.onGestureMove(0, (float) yAxisSeekBar.getProgress() / 100.0F, MotionEvent.ACTION_DOWN);
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    mContentProvider.onGestureMove(PROGRESS_DONE, PROGRESS_DONE, MotionEvent.ACTION_UP);
+                }
+            });
+
+            yAxisSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    mContentProvider.onGestureMove((float) xAxisSeekBar.getProgress() / 100.0F, (float) progress / 100.0F, MotionEvent.ACTION_MOVE);
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                    mContentProvider.onGestureMove(PROGRESS_INIT, PROGRESS_INIT, MotionEvent.ACTION_DOWN);
+                    mContentProvider.onGestureMove((float) xAxisSeekBar.getProgress() / 100.0F, 0, MotionEvent.ACTION_DOWN);
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    mContentProvider.onGestureMove(PROGRESS_DONE, PROGRESS_DONE, MotionEvent.ACTION_UP);
+                }
+            });
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event){
-        if(mContentProvider != null) {
-            int action = event.getActionMasked();
-            switch (action) {
-                case MotionEvent.ACTION_DOWN:
-                    mContentProvider.onGestureMove(PROGRESS_INIT, PROGRESS_INIT, action);
-                    mContentProvider.onGestureMove(0, 0, action);
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    mContentProvider.onGestureMove(event.getX() / mScreenWidth, event.getY() / mScreenHeight, action);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    mContentProvider.onGestureMove(PROGRESS_DONE, PROGRESS_DONE, action);
-                    break;
-            }
-            return true;
-        }else{
-            return super.onTouchEvent(event);
-        }
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event){
+//        if(mContentProvider != null) {
+//            int action = event.getActionMasked();
+//            switch (action) {
+//                case MotionEvent.ACTION_DOWN:
+//                    mContentProvider.onGestureMove(PROGRESS_INIT, PROGRESS_INIT, action);
+//                    mContentProvider.onGestureMove(0, 0, action);
+//                    break;
+//                case MotionEvent.ACTION_MOVE:
+//                    mContentProvider.onGestureMove(event.getX() / mScreenWidth, event.getY() / mScreenHeight, action);
+//                    break;
+//                case MotionEvent.ACTION_UP:
+//                    mContentProvider.onGestureMove(PROGRESS_DONE, PROGRESS_DONE, action);
+//                    break;
+//            }
+//            return true;
+//        }else{
+//            return super.onTouchEvent(event);
+//        }
+//    }
 
     @Override
     protected  void onDestroy(){

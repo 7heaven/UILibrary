@@ -93,7 +93,8 @@ public class ExampleListActivity extends Activity {
             @Override
             public void onGestureMove(float x, float y, int action) {
                 if(x >= 0 && x <= 1){
-                    imageView.setScaleTypeAnimated(allScaleTypes[(int) (x * allScaleTypes.length)]);
+                    int index = (int) (x * allScaleTypes.length);
+                    if(index < allScaleTypes.length) imageView.setScaleTypeAnimated(allScaleTypes[index]);
                 }
             }
 
