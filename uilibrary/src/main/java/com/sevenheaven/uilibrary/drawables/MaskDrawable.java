@@ -97,12 +97,15 @@ public class MaskDrawable extends Drawable {
     @Override
     public void setAlpha(int alpha) {
         mPaint.setAlpha(alpha);
+
         invalidateSelf();
     }
 
     @Override
     public void setColorFilter(ColorFilter cf) {
+        mPaint.setColorFilter(cf);
 
+        invalidateSelf();
     }
 
     @Override

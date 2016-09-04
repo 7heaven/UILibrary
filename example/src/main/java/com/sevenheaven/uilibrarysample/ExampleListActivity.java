@@ -104,6 +104,9 @@ public class ExampleListActivity extends Activity {
         }));
     }
 
+    /**
+     * 任意正多边形
+     */
     private void addPolygonShapeInteractToList(){
         final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -165,6 +168,9 @@ public class ExampleListActivity extends Activity {
         }));
     }
 
+    /**
+     * 任意形状的遮罩
+     */
     private void addMaskDrawableToList(){
         final Drawable contentDrawable = ContextCompat.getDrawable(this, R.drawable.test1);
         final PolygonShape shape = new PolygonShape(6, 0.2F);
@@ -190,10 +196,15 @@ public class ExampleListActivity extends Activity {
         }));
     }
 
+
+    /**
+     * 任意Path作为进度条
+     */
     private void addPathProgressDrawableToList(){
         Paint paint = new Paint();
         paint.setTextSize(100);
 
+        //取得"Android N"字符串的轮廓
         Path animatePath = new Path();
         String text = "Android N";
         paint.getTextPath(text, 0, text.length(), 0, paint.getTextSize(), animatePath);
@@ -245,6 +256,9 @@ public class ExampleListActivity extends Activity {
         }));
     }
 
+    /**
+     * 苹果桌面图标下载风格的进度条
+     */
     private void addAppStoreStyleDrawableToList(){
         ProgressiveDrawable.DrawContentProvider appStoreProvider = new AppStoreStyleProgressProvider(0x99000000);
 
@@ -271,6 +285,9 @@ public class ExampleListActivity extends Activity {
         }));
     }
 
+    /**
+     *
+     */
     private void addGroupedAvatarDrawbleToList(){
         final Bitmap[] avatars = new Bitmap[]{BitmapFactory.decodeResource(getResources(), R.drawable.test0),
                 BitmapFactory.decodeResource(getResources(), R.drawable.test1),
