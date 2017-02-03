@@ -12,13 +12,16 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,7 @@ import com.sevenheaven.uilibrary.drawables.MaskDrawable;
 import com.sevenheaven.uilibrary.drawables.progressive.ProgressiveDrawable;
 import com.sevenheaven.uilibrary.drawables.progressive.providers.AppStoreStyleProgressProvider;
 import com.sevenheaven.uilibrary.drawables.progressive.providers.PathProgressProvider;
+import com.sevenheaven.uilibrary.shapes.ArcShape;
 import com.sevenheaven.uilibrary.shapes.PolygonShape;
 import com.sevenheaven.uilibrary.views.AnimatedImageView;
 import com.sevenheaven.uilibrarysample.ExampleListAdapter.ExampleItem;
@@ -65,6 +69,40 @@ public class ExampleListActivity extends Activity {
         addMaskDrawableToList();
         addPolygonShapeInteractToList();
         addAnimatedImageViewToList();
+        addArcShapeToList();
+    }
+
+    private void addArcShapeToList(){
+        final ArcShape arcShape = new ArcShape(0, 0, 0);
+        final ShapeDrawable shapeDrawable = new ShapeDrawable(arcShape);
+        shapeDrawable.getPaint().setStyle(Paint.Style.STROKE);
+        shapeDrawable.getPaint().setColor(0xFF0099CC);
+        shapeDrawable.setPadding(30, 30, 30, 30);
+
+        mExampleItemList.add(new ExampleItem("ArcShape", new ExampleDetailActivity.DetailContentProvider() {
+            @Override
+            public Object provideInstance() {
+                return shapeDrawable;
+            }
+
+            @Override
+            public void onGestureMove(float x, float y, int action) {
+                if(x >= 0 && x <= 1){
+                    arcShape.setEndAngle(360 * x);
+                    shapeDrawable.invalidateSelf();
+                }
+
+                if(y >= 0 && y <= 1){
+                    arcShape.setStrokeWidth((int) (y * 100));
+                    shapeDrawable.invalidateSelf();
+                }
+            }
+
+            @Override
+            public void destroy() {
+
+            }
+        }));
     }
 
     private void addAnimatedImageViewToList(){
